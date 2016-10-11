@@ -9,6 +9,7 @@ define(['dojo/_base/declare',
   'esri/symbols/SimpleFillSymbol', 
   'esri/Color',
   'esri/widgets/Popup',
+  'esri/request',
   //'esri/dijit/PopupTemplate',
   'esri/tasks/support/Query',
   'esri/tasks/QueryTask',
@@ -24,7 +25,7 @@ define(['dojo/_base/declare',
   'dojo/domReady!'],
   function(declare, FeatureLayer, GraphicsLayer, Graphic, 
     PopupTemplate, Point, SimpleMarkerSymbol, SimpleFillSymbol, Color,
-    Popup, Query, QueryTask, BaseWidget, domClass, domConstruct, 
+    Popup, esriRequest, Query, QueryTask, BaseWidget, domClass, domConstruct, 
     on, Chart, theme) {
     //To create a widget, you need to derive from BaseWidget.
     return declare([BaseWidget], {
@@ -58,38 +59,27 @@ define(['dojo/_base/declare',
         // Si la hay borramos la lista de barrios
         var num_options = document.getElementById("selectBarrios").options.length;
         var aea = document.getElementById("selectBarrios");
-        debugger
         if (num_options>1){
             for (var i=0; i <  num_options ; i++) {
                 aea.removeChild(aea.childNodes[0]);
-                debugger
-                // var list = document.getElementById("selectBarrios");
-                // list.removeChild(list.childNodes[0]); 
             }       
         }
 
         var target = event.target || event.srcElement;
-        //var distrito = event.target.innerHTML;
         var distrito = document.getElementById("distrito").value;
         
-        var a = esri.request({
-          url: "http://services6.arcgis.com/ISJgswKTd7DKhcLN/ArcGIS/rest/services/DivisionesAdministrativas/FeatureServer/0/query?where=%22NOMDIS%22+%3D+%27" + distrito + "%27&outFields=*",
-          content: {
-            f: "json"
-          },
-          handleAs: "json",
-          callbackParamName: "callback"
+        var a = esriRequest("http://services6.arcgis.com/ISJgswKTd7DKhcLN/ArcGIS/rest/services/DivisionesAdministrativas/FeatureServer/0/query?where=%22NOMDIS%22+%3D+%27" + distrito + "%27&outFields=*&f=json",
+          {responseType:"json"
         });
 
         a.then(function(e) {
-          var g = e.features;
+          var g = e.data.features;
           var numbarrios = g.length;
           for (var count = 0; count <= numbarrios -1; count++){
             var new_barrio = document.createElement("option");
             new_barrio.value = g[count].attributes.NOMBRE;
             new_barrio.text = g[count].attributes.NOMBRE;
-            document.getElementById("selectBarrios").add(new_barrio);
-          
+            document.getElementById("selectBarrios").add(new_barrio);       
           }
           document.getElementById("selectBarrios").style.display = "block";
           document.getElementById("p_Barrios").style.display = "block";
@@ -97,93 +87,54 @@ define(['dojo/_base/declare',
       },
 
       muestraPuntos: function() {
-
-        for (i=1 ; i=9; i++) {
+        // These for loop  find the url to make the queries
+        for (i=1 ; i<=9; i++) {
           if (document.getElementById(i).checked == true) {
             var delito = document.getElementById(i).value;
+            var nombre_delito = document.getElementById(i).nextSibling.textContent;
           }
         }
-        for (i=2013; i=2008; i--) {
-          if (document.getElementById(i).checked == true) {
-            var anio = document.getElementById(i).value;
-            var num_url = delito + anio;
+        for (j=2013; j>=2008; j--) {
+          if (document.getElementById(j).checked == true) {
+            var anio = document.getElementById(j).value;
+            var num_url = parseInt(delito) + parseInt(anio);
           }
         }
 
+        var url = "http://services6.arcgis.com/ISJgswKTd7DKhcLN/ArcGIS/rest/services/Incidentes_Madrid/FeatureServer/" + num_url;
         
-
-        //var delito = document.getElementById("que");
-        //var aea = document.getElementById("a_joyerias");
-
-        var fecha_inicial = document.getElementById("fecha_inicial").value +":00";
-        var fecha_inicial2 = fecha_inicial.replace("T", " ");
-        //var fecha_inicial = "2013-06-28 06:15:17";
-        var fecha_final = document.getElementById("fecha_final").valueAsNumber;
-
-        var d = new Date(fecha_inicial);
-        var c = d.getUTCHours();
-        var f = d.getUTCMonth();
-        //var j = d.getUTCTime();
-        var l = d.getUTCFullYear();
-        var m = d.getUTCDate();
-        debugger
-
 
         var that = this;
 
+        function whereQuery() {
+          if (document.getElementById("fecha_inicial").length == 0 || document.getElementById("fecha_final").length == 0) {
+            var query_date = "";
+          } else {
+            // We check if there are date range
+            var f_inicial = document.getElementById("fecha_inicial").value +":00";
+            var fecha_inicial = f_inicial.replace("T", " ");
+            var f_final = document.getElementById("fecha_final").value +":00";
+            var fecha_final = f_final.replace("T", " ");
+            var query_date = "AND FECHA >= date'" + fecha_inicial + "' AND FECHA <= date'" + fecha_final + "'";
+          }
+
+          var query_distrito = "Distrito = '" + document.getElementById("distrito").value + "'";
+          var query_barrio = "AND Barrio = '" + document.getElementById("selectBarrios").value + "'";
+
+          var query_where = query_distrito + query_barrio + query_date;
+          return query_where;
+        }
+
         
-
-        // var template = new PopupTemplate({
-        //   title: "Boston Marathon 2013",
-        //   description: "{Distrito}"
-        // });
-
-        // function queryTaskExecuteCompleteHandler(queryResults){
-        //   console.log("complete", queryResults);
-        //   var num_points = queryResults.featureSet.features.length;
-
-        //   var graphic_layer = new GraphicsLayer();
-
-        //   for (i=0; i < num_points; i++) {
-        //     var point_graphic =  new Point();
-        //     point_graphic.x = queryResults.featureSet.features[i].geometry.x;
-        //     point_graphic.y = queryResults.featureSet.features[i].geometry.y;
-        //     var markerSymbol = new SimpleMarkerSymbol({
-        //       color: [226, 119, 40],
-        //       outline: {
-        //         color: [255, 255, 255],
-        //         width: 2
-        //       }
-        //     });
-
-        //     var template = new PopupTemplate();
-        //     template.title = "Ese esss";
-        //     template.content = "<p>As of 2015, <b>%</b> of the population in this zip code is married.</p>";
-
-        //     var graphic = new Graphic();
-        //     graphic.geometry = point_graphic;
-        //     graphic.popupTemplate = template;
-        //     graphic.symbol = markerSymbol;
-
-        //     graphic_layer.add(graphic);
-
-            
-        //   }
-        //  that.map.addLayer(graphic_layer);
-        // }
-
-        var queryTask = new QueryTask("http://services6.arcgis.com/ISJgswKTd7DKhcLN/ArcGIS/rest/services/Incidentes_Madrid/FeatureServer/1");
+        var queryTask = new QueryTask(url);
         var query = new Query();
-        query.where = "Distrito = 'Centro' AND FECHA > date'" + fecha_inicial2 + "'";
-        //query.geometry = "esriGeometryPoint";
-        //query.spatialRelationship = query.SPATIAL_REL_CONTAINS;
+        query.where = whereQuery();
         query.outFields = ["*"];
         query.returnGeometry = true;
         //queryTask.on("complete", queryTaskExecuteCompleteHandler);
         queryTask.execute(query).then(function(result) {
-          debugger
-          var num_points = result.features.length;
 
+          var num_points = result.features.length;
           var graphic_layer = new GraphicsLayer();
 
           for (i=0; i < num_points; i++) {
@@ -198,9 +149,11 @@ define(['dojo/_base/declare',
               }
             });
 
+            var d = new Date(result.features[i].attributes.FECHA);
+
             var template = new PopupTemplate();
-            template.title = "{Barrio}";
-            template.content = "<p>As of 2015, <b>%</b> of the population in this zip code is married.</p>";
+            template.title = result.features[i].attributes.Barrio + " ("+ result.features[i].attributes.Distrito +")";
+            template.content = "<p><b>Fecha: </b>" + d.toUTCString() + "</p><br><p><b>Delito: </b>" + nombre_delito + "</p><br><p><b>Calle: </b>" + result.features[i].attributes.CALLE + "</p>";
 
             var graphic = new Graphic();
             graphic.geometry = point_graphic;
@@ -210,6 +163,16 @@ define(['dojo/_base/declare',
             graphic_layer.add(graphic);
 
           }
+          var nueva_layer = document.createElement("label");
+          var nuevo_boron = document.createElement("button");
+          debugger
+          nueva_layer.innerHTML = nombre_delito;
+          nuevo_boron.innerHTML = "CERRAR";
+          document.getElementById("capas").appendChild(nueva_layer);
+          document.getElementById("capas").appendChild(nuevo_boron);
+          document.getElementById("capas").appendChild(document.createElement("br"));
+          document.getElementById("capas").style.display = "block";
+
           that.sceneView.map.add(graphic_layer);
         });
       },

@@ -1,4 +1,4 @@
-<div>
+<div class="background-color:rgba(51,51,51,0.9);">
 <!--   <h3>${nls.widgetTitle}</h3>
   <p>${nls.description}</p> -->
   <!-- Nav tabs -->
@@ -65,22 +65,7 @@
           <label><input type="radio" name="opciones" value=5 id="2008">2008</label>
       </div>
       
-      
-      
-      
-      
-      <!-- <button class="btn btn-default dropdown-toggle" type="button" id="anios" data-toggle="dropdown">
-          Año
-          <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="anios">
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2008</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2009</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2010</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2011</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2012</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2013</a></li>
-        </ul> -->
+    
       <br><br>
       <p>Fecha inicial</p>
       <input type="datetime-local" class="form-control" id="fecha_inicial">
@@ -129,43 +114,17 @@
       <button class="btn btn-default btn-lg" type="button" id="botonejecutar" data-dojo-attach-event="onclick:muestraPuntos">
           Ejecutar
       </button>
+
+      <div id="capas" class="display:none;">
+      </div>
+
+
+
+
+
     </div>
 
-      <!-- <button class="btn btn-default dropdown-toggle" type="button" id="distrito" data-toggle="dropdown" >
-          Distrito
-          <span class="caret"></span>
-      </button>
-      <ul id="distritos" class="dropdown-menu" role="menu" aria-labelledby="distrito" data-dojo-attach-event="onclick:muestraDistritos">
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Centro</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Arganzuela</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Retiro</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Salamanca</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Chamartín</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Tetuán</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Chamberí</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Fuencarral - El Pardo</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Moncloa - Aravaca</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Latina</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carabanchel</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Usera</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Puente de Vallecas</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Moratalaz</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Ciudad Lineal</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Hortaleza</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Villaverde</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Villa de Vallecas</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Vicálvaro</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">San Blas</a></li>
-          <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Barajas</a></li>
-        </ul>
-        <br><br>
-        <button class="btn btn-default dropdown-toggle" type="button" id="barrio" data-toggle="dropdown" style="display:none;">
-          Elija barrio
-          <span class="caret"></span>
-        </button>
-        <ul id="barrios" class="dropdown-menu" role="menu" aria-labelledby="barrio" style="display: none;">
-        </ul>
- -->
+
 
   </div>
   <!-- End tab pane -->
